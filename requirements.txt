@@ -1,0 +1,5 @@
+Flask
+pymongo
+plotly
+pandas
+groq
