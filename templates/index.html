@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE Analysis System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1450px;
+            height: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-image: url(https://media.istockphoto.com/id/1412282189/photo/lock-network-technology-concept.jpg?s=612x612&w=0&k=20&c=hripuxLs9pS_7Ln6YWQR-Ow2_-BU5RdQ4vOY8s1q1iQ=);
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* CSS */
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Space between buttons */
+            justify-content: center;
+        }
+
+        .nav-buttons a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            border-radius: 30px;
+            display: inline-block;
+            background-color: #bfc6cc; /* Default background */
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        /* Style for the active state */
+        .dashboard-button.active {
+            background-color: #6a5acd; /* Blue for Dashboard */
+            color: white;
+        }
+
+        .cve-button.active {
+            background-color: #6a5acd; /* Blue for CVE Analyser */
+            color: white;
+        }
+
+        /* Adding arrow effect */
+        .nav-buttons a::after {
+            content: '>';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #bfc6cc;
+        }
+
+        .nav-buttons a:last-child::after {
+            content: ''; /* Remove arrow for the last button */
+        }
+
+        /* Example hover state */
+        .nav-buttons a:hover {
+            background-color: #6a5acd;
+            color: #fff;
+        }
+
+
+        .CVE-heading{
+            color: #ffffff;
+            font-size: 37px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color:rgb(20, 19, 19);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        input[type="text"] {
+            width: 340px; /* Set a fixed width for the input */
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .cve-details, .llm-response {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cve-details h2, .llm-response h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        .severity-high {
+            color: #e74c3c;
+        }
+
+        .severity-medium {
+            color: #f39c12;
+        }
+
+        .severity-low {
+            color: #27ae60;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+
+        .error {
+            color: #e74c3c;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #fde2e2;
+            margin: 10px 0;
+        }
+
+        .references {
+            margin-top: 10px;
+        }
+
+        .references a {
+            display: block;
+            color: #3498db;
+            text-decoration: none;
+            margin: 5px 0;
+        }
+
+        .references a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- navbar -->
+        <div class="nav-buttons">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/">CVE Search</a>
+        </div>
+        <!-- CVE_SEARCH -->
+        <h1 class="CVE-heading">CVE Analysis System</h1>
+        
+        <div class="search-container">
+            <input type="text" id="dataId" placeholder="Enter CVE ID (e.g., CVE-1999-0095)" value="CVE-1999-0095">
+            <button onclick="fetchAndGenerateResponse()">Analyze CVE</button>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="loading" class="loading" style="display: none;color: white;
+        font-size: 23px;font-weight: bold;">Analyzing CVE data...</div>
+
+        <div class="results-container" id="results" style="display: none;">
+            <div class="cve-details">
+                <h2>CVE Details</h2>
+                <div id="cveData"></div>
+            </div>
+            
+            <div class="llm-response">
+                <h2>Analysis</h2>
+                <div id="response"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchAndGenerateResponse() {
+            const dataId = document.getElementById('dataId').value;
+            const errorElement = document.getElementById('error');
+            const loadingElement = document.getElementById('loading');
+            const resultsElement = document.getElementById('results');
+            const responseElement = document.getElementById('response');
+            const cveDataElement = document.getElementById('cveData');
+
+            if (!dataId) {
+                showError('Please enter a CVE ID');
+                return;
+            }
+
+            // Reset UI
+            errorElement.style.display = 'none';
+            loadingElement.style.display = 'block';
+            resultsElement.style.display = 'none';
+
+            try {
+                const response = await fetch('/generate-response', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: dataId })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Display CVE data
+                    const cveData = result.cve_data;
+                    const cvssScore = parseFloat(cveData.cvssScore);
+                    const severityClass = cvssScore >= 7 ? 'severity-high' : 
+                                        cvssScore >= 4 ? 'severity-medium' : 'severity-low';
+
+                    cveDataElement.innerHTML = `
+                        <p><strong>ID:</strong> ${cveData.id}</p>
+                        <p><strong>Description:</strong> ${cveData.description}</p>
+                        <p><strong>CVSS Score:</strong> <span class="${severityClass}">${cveData.cvssScore}</span></p>
+                        <p><strong>Published Date:</strong> ${cveData.publishedDate}</p>
+                        <p><strong>Affected Product:</strong> ${cveData.affectedProduct}</p>
+                        <p><strong>Authentication Required:</strong> ${cveData.authenticationRequired}</p>
+                        <p><strong>Access Complexity:</strong> ${cveData.accessComplexity}</p>
+                        <p><strong>Impact:</strong></p>
+                        <ul>
+                            <li>Confidentiality: ${cveData.confidentialityImpact}</li>
+                            <li>Integrity: ${cveData.integrityImpact}</li>
+                            <li>Availability: ${cveData.availabilityImpact}</li>
+                        </ul>
+                        <div class="references">
+                            <strong>References:</strong>
+                            ${cveData.references.map(ref => `<a href="${ref}" target="_blank">${ref}</a>`).join('')}
+                        </div>
+                    `;
+
+                    // Display LLM response with markdown formatting
+                    responseElement.innerHTML = marked.parse(result.response);
+                    
+                    // Show results
+                    resultsElement.style.display = 'grid';
+                } else {
+                    showError(result.error || 'Failed to generate response');
+                }
+            } catch (error) {
+                showError('An error occurred while processing your request');
+            } finally {
+                loadingElement.style.display = 'none';
+            }
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+        }
+
+        
+    </script>
+</body>
+</html>

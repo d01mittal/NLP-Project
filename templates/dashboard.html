@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE Vulnerability Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .pie-charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .chart-container {
+            margin-bottom: 30px;
+        }
+        /* .back-button {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            float: right;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            background-color: #c0392b;
+        } */
+         /* CSS */
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Space between buttons */
+        }
+
+        .nav-buttons a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            border-radius: 30px;
+            display: inline-block;
+            background-color: #bfc6cc; /* Default background */
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        /* Style for the active state */
+        .dashboard-button.active {
+            background-color: #6a5acd; /* Blue for Dashboard */
+            color: white;
+        }
+
+        .cve-button.active {
+            background-color: #6a5acd; /* Blue for CVE Analyser */
+            color: white;
+        }
+
+        /* Adding arrow effect */
+        .nav-buttons a::after {
+            content: '>';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #bfc6cc;
+        }
+
+        .nav-buttons a:last-child::after {
+            content: ''; /* Remove arrow for the last button */
+        }
+
+        /* Example hover state */
+        .nav-buttons a:hover {
+            background-color: #6a5acd;
+            color: #fff;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+        input, button {
+            margin: 5px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- <a href="/" class="back-button">Back to Home</a> -->
+        <div class="nav-buttons">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/">CVE Search</a>
+        </div>
+        <h1>CVE Vulnerability Dashboard</h1>
+        <p>This dashboard visualizes CVE vulnerabilities and their related data.</p>
+
+        <h2>Filter CVE Data</h2>
+        <form action="/dashboard" method="get">
+            <label for="start">Start ID:</label>
+            <input type="number" id="start" name="start" min="0" value="{{ request.args.get('start', 0) }}" required>
+            
+            <label for="end">End ID:</label>
+            <input type="number" id="end" name="end" min="0" value="{{ request.args.get('end', 1000) }}" required>
+
+            <button type="submit">Apply Filter</button>
+        </form>
+
+        <div class="chart-container">
+            <h2>CVSS Score by CVE ID</h2>
+            <div id="bar-chart"></div>
+        </div>
+
+        <h2>Impact Distributions</h2>
+        <div class="pie-charts-container">
+            <div class="chart-container">
+                <div id="pie-chart-complete"></div>
+            </div>
+            <div class="chart-container">
+                <div id="pie-chart-partial"></div>
+            </div>
+            <div class="chart-container">
+                <div id="pie-chart-none"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to safely parse JSON
+        function parseJSON(jsonString) {
+            try {
+                return JSON.parse(jsonString);
+            } catch (error) {
+                console.error("Error parsing JSON:", error);
+                return null;
+            }
+        }
+
+        // Render bar chart
+        const barChartData = parseJSON('{{ bar_chart | safe }}');
+        if (barChartData) {
+            Plotly.newPlot('bar-chart', barChartData.data, barChartData.layout);
+        }
+
+        // Render pie charts
+        const pieChartComplete = parseJSON('{{ pie_chart_complete | safe }}');
+        if (pieChartComplete) {
+            Plotly.newPlot('pie-chart-complete', pieChartComplete.data, pieChartComplete.layout);
+        }
+
+        const pieChartPartial = parseJSON('{{ pie_chart_partial | safe }}');
+        if (pieChartPartial) {
+            Plotly.newPlot('pie-chart-partial', pieChartPartial.data, pieChartPartial.layout);
+        }
+
+        const pieChartNone = parseJSON('{{ pie_chart_none | safe }}');
+        if (pieChartNone) {
+            Plotly.newPlot('pie-chart-none', pieChartNone.data, pieChartNone.layout);
+        }
+    </script>
+</body>
+</html>
