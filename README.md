@@ -8,6 +8,11 @@ The **CVE Analysis System** is a web-based application designed for analyzing Co
 - **Dashboard Visualization**: Visualizations for CVSS scores and impact distribution based on Confidentiality, Integrity, and Availability.
 - **Interactive UI**: User-friendly interface with navigation, filtering, and search capabilities.
 
+## Flowchart
+
+![Flowchart](https://github.com/user-attachments/assets/dd115cca-03e4-45da-a3ff-dbd124c884af)
+
+
 ## Prerequisites
 
 - **Python 3.x**
