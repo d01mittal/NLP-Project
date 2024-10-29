@@ -35,7 +35,7 @@ The **CVE Analysis System** is a web-based application designed for analyzing Co
    ```bash
    export MONGO_URI='your_mongodb_uri'
    export GROQ_API_KEY='your_groq_api_key'
-4. **Database Setup**: Ensure your MongoDB collection (`NLP_project.CSV_data`) is populated with CVE data. The required fields in the database include:
+4. **Database Setup**: Ensure your MongoDB collection (`NLP_project.CSV_data`) is populated with CVE data. The data is uploaded above and the google drive link of the data is here as well: https://drive.google.com/file/d/13m3C67nP-wUJcs2x-1NeQTj_G-9LSaCG/view?usp=drive_link. The required fields in the database include:
    ```bash
    export MONGO_URI='your_mongodb_uri'
    export GROQ_API_KEY='your_groq_api_key'
