@@ -3,3 +3,4 @@ pymongo
 plotly
 pandas
 groq
+gunicorn
