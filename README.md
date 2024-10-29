@@ -26,7 +26,7 @@ The **CVE Analysis System** is a web-based application designed for analyzing Co
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/CVE-Analysis-System.git
+   git clone https://github.com/d01mittal/NLP-Project.git
    cd CVE-Analysis-System
 2. **Install Required Libraries**: Use `pip` to install the required dependencies.
    ```bash
