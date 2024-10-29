@@ -51,7 +51,7 @@ The **CVE Analysis System** is a web-based application designed for analyzing Co
  - `availabilityImpact`
 5. **Run the Application**: Start the Flask server:
    ```bash
-   flask run
+   python app.py
   The application will be available at `http://127.0.0.1:5000`.
 
 ## Application Structure
