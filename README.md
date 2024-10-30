@@ -74,6 +74,12 @@ The **CVE Analysis System** is a web-based application designed for analyzing Co
 
 To deploy the application, configure the environment variables on your hosting platform and ensure MongoDB is accessible.
 
+## Key Features
+
+1. Access to comprehensive CVE data up to August 2024.
+2. Integrated AI capabilities for smarter data insights.
+3. Interactive data visualization with multiple plot types, allowing users to customize data ranges for a tailored view.
+
 ## Collaborators
 
 - [d01mittal](https://github.com/d01mittal)
