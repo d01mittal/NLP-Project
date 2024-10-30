@@ -49,6 +49,9 @@ The **CVE Analysis System** is a web-based application designed for analyzing Co
  - `confidentialityImpact`
  - `integrityImpact`
  - `availabilityImpact`
+The data should be stored like this in MongoDB:
+![DataBase photo](https://github.com/user-attachments/assets/81c9f23d-bc90-4ced-b193-b9bb104bb952)
+
 5. **Run the Application**: Start the Flask server:
    ```bash
    flask run
