@@ -10,10 +10,6 @@ The **CVE Analysis System** is a web-based application designed for analyzing Co
 
 ## Flowchart
 
-![Flowchart](https://github.com/user-attachments/assets/dd115cca-03e4-45da-a3ff-dbd124c884af)
-
-The modified flowchart is:
-
 ![Flowchart_Modified](https://github.com/user-attachments/assets/1265fc75-7bbc-44bb-b7cb-afbda772e77f)
 
 
